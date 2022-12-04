@@ -6,8 +6,6 @@
 #include "engine.h"
 
 
-int calculate_checksum(char *text);
-
 int main(void) {
 
 	typedef union {
