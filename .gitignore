@@ -1,4 +1,6 @@
-Debug/
-README.md
-.cproject
-.project
+local/*
+output/*
+!local/snippets
+local/snippets/*
+!local/snippets/system_files.custom
+Debug/*
