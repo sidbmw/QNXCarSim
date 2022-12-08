@@ -12,10 +12,11 @@
 
 #include "engine.h" // defines messages between client and server
 
-int airbags(void) {
+int main(void) {
 
 	airbag_toggle_msg_t msg;
-	int server_coid, return_status;
+	int server_coid;
+	char return_status[256];
 
 	printf("airbags.c now attempting to connect to engine.c\n");
 
@@ -29,7 +30,7 @@ int airbags(void) {
 	msg.type = AIRBAG_TOGGLE;
 	MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
-	printf("airbags.c returned: %d\n", return_status);
+	printf("airbags.c returned: %s\n", return_status);
 
 	return EXIT_SUCCESS;
 }

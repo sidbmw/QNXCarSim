@@ -6,3 +6,4 @@ Coverage/*
 .project
 .settings/*
 .vscode/*
+*.o
