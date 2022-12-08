@@ -2,7 +2,5 @@ local/*
 output/*
 Debug/*
 .cproject
-.project
 Coverage/*
-/Debug/
-.settings/*
+.project
