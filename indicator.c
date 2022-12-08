@@ -29,7 +29,7 @@ int main(void) {
 	msg.type = INDICATOR_TOGGLE;
 	int status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
-	printf("indicator.c returned: %d\n", return_status);
+	printf("indicator.c returned: %s\n", return_status);
 
      if (status == -1) {
         fprintf(stderr, "Error during MsgSend\n");

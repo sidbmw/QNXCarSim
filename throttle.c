@@ -29,7 +29,7 @@ int main(void) {
 	msg.type = THROTTLE_TOGGLE;
 	int status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
-	printf("throttle.c returned: %d\n", return_status);
+	printf("throttle.c returned: %s\n", return_status);
 
      if (status == -1) {
         fprintf(stderr, "Error during MsgSend\n");
