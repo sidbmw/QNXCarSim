@@ -1,9 +1,0 @@
-# local/snippets/system_files.custom
-# Placeholder for local list of files to add to system partition
-
-xbin/python3=usr/bin/python3
-lib/libpython3.8.so.1.0=usr/lib/libpython3.8.so.1.0
-lib/python3.8=../usr/lib/python3.8
-lib/python3.8/lib-dynload=usr/lib/python3.8/lib-dynload
-usr/lib/libffi/so.7
-

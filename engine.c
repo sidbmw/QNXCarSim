@@ -97,6 +97,8 @@ int main(void) {
 
 					//Do some work since airbags deployed
 					//This case and ENGINE_TOGGLE are very similar might remove one of them
+					//If we are here it means airbags were deployed and the car should be shut off
+					//meaning we need to kill and cleanup everything
 
 					goto exit_loop;
 					break;
@@ -113,6 +115,5 @@ int main(void) {
 	exit_loop:
 		name_detach(attach, 0);
 		printf("Namespace detached and channel destroyed\n");
-
-	return EXIT_SUCCESS;
+		return EXIT_SUCCESS;
 }
