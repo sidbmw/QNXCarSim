@@ -6,3 +6,5 @@ local/snippets/*
 Debug/*
 .cproject
 .project
+/Debug/
+/Coverage/
