@@ -14,7 +14,7 @@
 
 int main(void) {
 
-    throttle_toggle_msg_t msg;
+    brakes_toggle_msg_t msg;
     int server_coid, status;
     char return_status[256];
 
