@@ -4,3 +4,4 @@ Debug/*
 .cproject
 Coverage/*
 .project
+.settings/*
