@@ -1,10 +1,8 @@
 local/*
 output/*
-!local/snippets
-local/snippets/*
-!local/snippets/system_files.custom
 Debug/*
 .cproject
 .project
+Coverage/*
 /Debug/
-/Coverage/
+.settings/*

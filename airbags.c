@@ -12,7 +12,7 @@
 
 #include "engine.h" // defines messages between client and server
 
-int airbags(int argc, char **argv) {
+int airbags() {
 
 	airbag_toggle_msg_t msg;
 	int server_coid, return_status;
