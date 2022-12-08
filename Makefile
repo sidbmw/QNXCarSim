@@ -21,7 +21,3 @@ all: $(BINS)
 clean:
 	rm -f *.o $(BINS);
 
-
-# ADD ADDITIONAL FILES HERE
-engine.o: engine.c engine.h
-airbags.o: airbags.c
