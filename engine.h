@@ -28,7 +28,7 @@ typedef struct brakes_toggle_msg_t {
 // Indicator toggle message
 typedef struct indicator_toggle_msg_t {
 	uint16_t type;
-	unsigned char left_right;
+	unsigned char left_right; //left = 0, right = 1
 } indicator_toggle_msg_t;
 
 // Airbag toggle message
