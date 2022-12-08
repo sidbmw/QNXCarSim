@@ -20,7 +20,6 @@ all: $(BINS)
 
 clean:
 	rm -f *.o $(BINS);
-#	cd solutions; make clean
 
 
 # ADD ADDITIONAL FILES HERE
