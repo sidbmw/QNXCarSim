@@ -5,6 +5,5 @@ local/snippets/*
 !local/snippets/system_files.custom
 Debug/*
 .cproject
+Coverage/*
 .project
-/Debug/
-/Coverage/
