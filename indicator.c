@@ -19,13 +19,6 @@ int main(int argc, char **argv) {
     char return_status[256];
     char *left_right;
 
-	if (argc != 1){
-        printf("Error: not enough arguments\n");
-        exit(EXIT_FAILURE);
-    }
-
-	left_right = argv[1];
-
     if (argc != 2){
         printf("Error: Must have two arguments\n");
         exit(EXIT_FAILURE);
@@ -45,9 +38,9 @@ int main(int argc, char **argv) {
 	}
 	else {
 		printf("Error: not a valid argument\n");
-        exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
-	int status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
+	MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
     /* find our server to get a coid*/
     if ((server_coid = name_open(SERVER_NAME, 0)) == -1) {
@@ -75,7 +68,7 @@ int main(int argc, char **argv) {
     if (status == -1) {
         fprintf(stderr, "Error during MsgSend\n");
         perror(NULL);
-        exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
     }
 
     return EXIT_SUCCESS;

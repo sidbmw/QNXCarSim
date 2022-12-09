@@ -26,9 +26,9 @@ int main(void) {
     }
     printf("brakes.c successfully connected to engine.c\n");
 
-    /* send a get message to the server to get a shared memory handle from the server */
-    msg.type = BRAKES_TsOGGLE;
-    status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
+	/* send a get message to the server to get a shared memory handle from the server */
+	msg.type = BRAKE_TOGGLE;
+	MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
     printf("brakes.c returned: %s\n", return_status);
 
