@@ -12,11 +12,19 @@
 
 #include "engine.h" // defines messages between client and server
 
-int main(void) {
+int main(int argc, char **argv) {
 
     throttle_toggle_msg_t msg;
     int server_coid, status;
     char return_status[256];
+	int pressure;
+
+	if (argc != 2){
+        printf("Error: Must have two arguments\n");
+        exit(EXIT_FAILURE);
+    }
+
+    pressure = argv[1];
 
     printf("throttle.c now attempting to connect to engine.c\n");
 
@@ -28,6 +36,7 @@ int main(void) {
 
     /* send a get message to the server to get a shared memory handle from the server */
     msg.type = THROTTLE_TOGGLE;
+	msg.pressure = pressure;
     status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
     printf("throttle.c returned: %s\n", return_status);

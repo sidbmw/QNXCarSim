@@ -18,11 +18,13 @@ typedef struct engine_toggle_msg_t {
 // Throttle toggle message
 typedef struct throttle_toggle_msg_t {
     uint16_t type;
+	int pressure;
 } throttle_toggle_msg_t;
 
 // Brake toggle message
 typedef struct brakes_toggle_msg_t {
     uint16_t type;
+	int pressure;
 } brakes_toggle_msg_t;
 
 // Indicator toggle message
