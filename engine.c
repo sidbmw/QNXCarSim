@@ -49,7 +49,7 @@ int main(void) {
                  */
                 printf("Client is gone\n");
                 ConnectDetach(msg.pulse.scoid);
-            break;
+                break;
 
             default:
                 /*
@@ -58,7 +58,7 @@ int main(void) {
                  * from the kernel?
                  */
                 printf("The pulse is something else. Code of the pulse: %d. Value of the pulse: %d.\n", msg.pulse.code, msg.pulse.value.sival_int);
-            break;
+                break;
             }
 
         } else { // if it was a message
@@ -69,28 +69,28 @@ int main(void) {
                 //This will probably be used to turn off the engine
                 //Do work
                 goto exit_loop;
-            break;
+                break;
 
             case THROTTLE_TOGGLE:
                 printf("In THROTTLE_TOGGLE\n");
 
                 //Do some work since throttle toggled
 
-            break;
+                break;
 
             case BRAKES_TOGGLE:
                 printf("In BRAKES_TOGGLE\n");
 
                 //Do some work since brakes toggled
 
-            break;
+                break;
 
             case INDICATOR_TOGGLE:
                 printf("In INDICATOR_TOGGLE\n");
 
                 //Do some work since indicators toggled
 
-            break;
+                break;
 
             case AIRBAG_TOGGLE:
                 printf("In BRAKES_TOGGLE\n");
@@ -101,11 +101,11 @@ int main(void) {
                 //meaning we need to kill and cleanup everything
 
                 goto exit_loop;
-            break;
+                break;
 
             default:
                 perror("MsgError\n");
-            break;
+                break;
             }
         }
 
