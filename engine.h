@@ -12,27 +12,29 @@
 
 // Engine toggle message
 typedef struct engine_toggle_msg_t {
-    uint16_t type;
+	uint16_t type;
 } engine_toggle_msg_t;
 
 // Throttle toggle message
 typedef struct throttle_toggle_msg_t {
-    uint16_t type;
+	uint16_t type;
+	int pressure;
 } throttle_toggle_msg_t;
 
 // Brake toggle message
 typedef struct brakes_toggle_msg_t {
-    uint16_t type;
+	uint16_t type;
+	int pressure;
 } brakes_toggle_msg_t;
 
 // Indicator toggle message
 typedef struct indicator_toggle_msg_t {
-    uint16_t type;
-    unsigned char left_right; //left = 0, right = 1
+	uint16_t type;
+	unsigned char left_right; //left = 0, right = 1
 } indicator_toggle_msg_t;
 
 // Airbag toggle message
 typedef struct airbag_toggle_msg_t {
-    uint16_t type;
+	uint16_t type;
 } airbag_toggle_msg_t;
 

@@ -12,31 +12,40 @@
 
 #include "engine.h" // defines messages between client and server
 
-int main(void) {
+int main(int argc, char **argv) {
 
-    throttle_toggle_msg_t msg;
-    int server_coid, status;
-    char return_status[256];
+	throttle_toggle_msg_t msg;
+	int server_coid, status;
+	char return_status[256];
+	int pressure;
+    
+	if (argc != 2){
+		printf("Error: Must have two arguments\n");
+		exit(EXIT_FAILURE);
+	}
 
-    printf("throttle.c now attempting to connect to engine.c\n");
+	pressure = argv[1];
 
-    /* find our server to get a coid*/
-    if ((server_coid = name_open(SERVER_NAME, 0)) == -1) {
-        return EXIT_FAILURE;
-    }
-    printf("throttle.c successfully connected to engine.c\n");
+	printf("throttle.c now attempting to connect to engine.c\n");
 
-    /* send a get message to the server to get a shared memory handle from the server */
-    msg.type = THROTTLE_TOGGLE;
-    status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
+	/* find our server to get a coid*/
+	if ((server_coid = name_open(SERVER_NAME, 0)) == -1) {
+		return EXIT_FAILURE;
+	}
+	printf("throttle.c successfully connected to engine.c\n");
 
-    printf("throttle.c returned: %s\n", return_status);
+	/* send a get message to the server to get a shared memory handle from the server */
+	msg.type = THROTTLE_TOGGLE;
+	msg.pressure = pressure;
+	status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
-    if (status == -1) {
-        fprintf(stderr, "Error during MsgSend\n");
-        perror(NULL);
-        exit(EXIT_FAILURE);
-    }
+	printf("throttle.c returned: %s\n", return_status);
 
-    return EXIT_SUCCESS;
+	if (status == -1) {
+		fprintf(stderr, "Error during MsgSend\n");
+		perror(NULL);
+		exit(EXIT_FAILURE);
+	}
+
+	return EXIT_SUCCESS;
 }
