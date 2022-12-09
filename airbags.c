@@ -14,23 +14,23 @@
 
 int main(void) {
 
-	airbag_toggle_msg_t msg;
-	int server_coid;
-	char return_status[256];
+    airbag_toggle_msg_t msg;
+    int server_coid;
+    char return_status[256];
 
-	printf("airbags.c now attempting to connect to engine.c\n");
+    printf("airbags.c now attempting to connect to engine.c\n");
 
-	/* find our server to get a coid*/
-	if ((server_coid = name_open(SERVER_NAME, 0)) == -1) {
-		return EXIT_FAILURE;
-	}
-	printf("airbags.c successfully connected to engine.c\n");
+    /* find our server to get a coid*/
+    if ((server_coid = name_open(SERVER_NAME, 0)) == -1) {
+        return EXIT_FAILURE;
+    }
+    printf("airbags.c successfully connected to engine.c\n");
 
-	/* send a get message to the server to get a shared memory handle from the server */
-	msg.type = AIRBAG_TOGGLE;
-	MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
+    /* send a get message to the server to get a shared memory handle from the server */
+    msg.type = AIRBAG_TOGGLE;
+    MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
-	printf("airbags.c returned: %s\n", return_status);
+    printf("airbags.c returned: %s\n", return_status);
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
