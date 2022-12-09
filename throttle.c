@@ -14,23 +14,23 @@
 
 int main(void) {
 
-	throttle_toggle_msg_t msg;
-	int server_coid;
-	char return_status[256];
+    throttle_toggle_msg_t msg;
+    int server_coid, status;
+    char return_status[256];
 
-	printf("throttle.c now attempting to connect to engine.c\n");
+    printf("throttle.c now attempting to connect to engine.c\n");
 
-	/* find our server to get a coid*/
-	if ((server_coid = name_open(SERVER_NAME, 0)) == -1) {
-		return EXIT_FAILURE;
-	}
-	printf("throttle.c successfully connected to engine.c\n");
+    /* find our server to get a coid*/
+    if ((server_coid = name_open(SERVER_NAME, 0)) == -1) {
+        return EXIT_FAILURE;
+    }
+    printf("throttle.c successfully connected to engine.c\n");
 
-	/* send a get message to the server to get a shared memory handle from the server */
-	msg.type = THROTTLE_TOGGLE;
-	MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
+    /* send a get message to the server to get a shared memory handle from the server */
+    msg.type = THROTTLE_TOGGLE;
+    status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
-	printf("throttle.c returned: %s\n", return_status);
+    printf("throttle.c returned: %s\n", return_status);
 
     if (status == -1) {
         fprintf(stderr, "Error during MsgSend\n");
@@ -38,5 +38,5 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
