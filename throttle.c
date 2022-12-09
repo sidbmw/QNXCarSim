@@ -15,7 +15,8 @@
 int main(void) {
 
 	throttle_toggle_msg_t msg;
-	int server_coid, return_status;
+	int server_coid;
+	char return_status[256];
 
 	printf("throttle.c now attempting to connect to engine.c\n");
 
@@ -27,11 +28,11 @@ int main(void) {
 
 	/* send a get message to the server to get a shared memory handle from the server */
 	msg.type = THROTTLE_TOGGLE;
-	int status = MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
+	MsgSend(server_coid, &msg, sizeof(msg), return_status, sizeof(return_status));
 
 	printf("throttle.c returned: %s\n", return_status);
 
-     if (status == -1) {
+    if (status == -1) {
         fprintf(stderr, "Error during MsgSend\n");
         perror(NULL);
         exit(EXIT_FAILURE);
