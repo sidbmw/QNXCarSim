@@ -17,10 +17,6 @@ int main(void) {
     airbag_toggle_msg_t msg;
     int server_coid;
     char return_status[256];
-    unsigned char indicator_bit = 1;
-    unsigned char turn = 1;
-    unsigned char resultant = indicator_bit ^ turn;
-    printf("resultant: %d\n", resultant);
 
     printf("airbags.c now attempting to connect to engine.c\n");
 
