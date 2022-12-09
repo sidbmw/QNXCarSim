@@ -97,10 +97,10 @@ int main(void) {
 
 					//Do some work since indicators toggled
 					//If user toggled left indicator, manipulate left bit
-					if(indicator_toggle.left_right == '0'){
-						indicator_bit && 01;
+					if(msg.indicator_toggle.left_right == '0'){
+						indicator_bit = indicator_bit && 01;
 					} else {
-						indicator_bit && 10;
+						indicator_bit = indicator_bit && 10;
 					}
 
 					switch(indicator_bit){
@@ -120,7 +120,7 @@ int main(void) {
 							printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
 							break;
 					}
-					return_msg = "0";
+					strcpy(return_msg, "0");
 					MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
 					break;
 
