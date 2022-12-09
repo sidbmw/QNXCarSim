@@ -12,11 +12,17 @@ int main(void) {
         uint16_t type;
         struct _pulse pulse;
         engine_toggle_msg_t engine_toggle;
+        throttle_toggle_msg_t throttle_toggle;
+        brakes_toggle_msg_t brakes_toggle;
+        indicator_toggle_msg_t indicator_toggle;
+        airbag_toggle_msg_t airbag_toggle;
     } recv_buf_t;
 
     int rcvid;
     name_attach_t *attach;
     recv_buf_t msg;
+    char return_msg[256];
+    char indicator_bit = 00;
 
     //create a channel
     if ((attach = name_attach(NULL, SERVER_NAME, 0)) == NULL) {
@@ -63,49 +69,75 @@ int main(void) {
 
         } else { // if it was a message
             switch(msg.type) {
-            case ENGINE_TOGGLE:
-                printf("In ENGINE_TOGGLE\n");
+				case ENGINE_TOGGLE:
+					printf("In ENGINE_TOGGLE\n");
 
-                //This will probably be used to turn off the engine
-                //Do work
-                goto exit_loop;
-                break;
+					//This will probably be used to turn off the engine
+					//Do work
+					goto exit_loop;
+					break;
 
-            case THROTTLE_TOGGLE:
-                printf("In THROTTLE_TOGGLE\n");
+				case THROTTLE_TOGGLE:
+					printf("In THROTTLE_TOGGLE\n");
 
-                //Do some work since throttle toggled
+					//Do some work since throttle toggled
 
-                break;
 
-            case BRAKES_TOGGLE:
-                printf("In BRAKES_TOGGLE\n");
+					break;
 
-                //Do some work since brakes toggled
+				case BRAKES_TOGGLE:
+					printf("In BRAKES_TOGGLE\n");
 
-                break;
+					//Do some work since brakes toggled
 
-            case INDICATOR_TOGGLE:
-                printf("In INDICATOR_TOGGLE\n");
+					break;
 
-                //Do some work since indicators toggled
+				case INDICATOR_TOGGLE:
+					printf("In INDICATOR_TOGGLE\n");
 
-                break;
+					//Do some work since indicators toggled
+					//If user toggled left indicator, manipulate left bit
+					if(indicator_toggle.left_right == '0'){
+						indicator_bit && 01;
+					} else {
+						indicator_bit && 10;
+					}
 
-            case AIRBAG_TOGGLE:
-                printf("In BRAKES_TOGGLE\n");
+					switch(indicator_bit){
+						case 00:
+							printf("BOTH INDICATORS OFF\n");
+							break;
+						case 10:
+							printf("LEFT INDICATOR FLASHING\n");
+							break;
+						case 01:
+							printf("RIGHT INDICATOR FLASHING\n");
+							break;
+						case 11:
+							printf("BOTH INDICATORS FLASHING\n");
+							break;
+						default:
+							printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
+							break;
+					}
+					return_msg = "0";
+					MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+					break;
 
-                //Do some work since airbags deployed
-                //This case and ENGINE_TOGGLE are very similar might remove one of them
-                //If we are here it means airbags were deployed and the car should be shut off
-                //meaning we need to kill and cleanup everything
+				case AIRBAG_TOGGLE:
+					printf("In BRAKES_TOGGLE\n");
 
-                goto exit_loop;
-                break;
+					//Do some work since airbags deployed
+					//This case and ENGINE_TOGGLE are very similar might remove one of them
+					//If we are here it means airbags were deployed and the car should be shut off
+					//meaning we need to kill and cleanup everything
 
-            default:
-                perror("MsgError\n");
-                break;
+					goto exit_loop;
+					break;
+
+				default:
+					perror("MsgError\n");
+					break;
             }
         }
 
