@@ -19,9 +19,5 @@ BINS = engine airbags throttle indicator brakes
 all: $(BINS)
 
 clean:
-    rm -f *.o $(BINS);
-
-
-# ADD ADDITIONAL FILES HERE
-
+	rm -f *.o $(BINS);
 
