@@ -15,7 +15,7 @@ TARGET = -Vgcc_ntox86_64
 
 CFLAGS += $(DEBUG) $(TARGET) -Wall
 LDFLAGS+= $(DEBUG) $(TARGET)
-BINS = engine airbags throttle indicator brakes
+BINS = engine airbags throttle indicator brakes steering
 all: clean $(BINS)
 
 clean:

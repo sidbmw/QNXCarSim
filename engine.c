@@ -16,6 +16,7 @@ int main(void) {
         brakes_toggle_msg_t brakes_toggle;
         indicator_toggle_msg_t indicator_toggle;
         airbag_toggle_msg_t airbag_toggle;
+        steering_toggle_msg_t steering_toggle;
     } recv_buf_t;
 
     int rcvid;
@@ -54,7 +55,7 @@ int main(void) {
                  */
                 printf("Client is gone\n");
                 ConnectDetach(msg.pulse.scoid);
-                break;
+            break;
 
             default:
                 /*
@@ -65,7 +66,7 @@ int main(void) {
                 printf(
                         "The pulse is something else. Code of the pulse: %d. Value of the pulse: %d.\n",
                         msg.pulse.code, msg.pulse.value.sival_int);
-                break;
+            break;
             }
 
         } else { // if it was a message
@@ -76,7 +77,7 @@ int main(void) {
                 //This will probably be used to turn off the engine
                 //Do work
                 goto exit_loop;
-                break;
+            break;
 
             case THROTTLE_TOGGLE:
                 printf("In THROTTLE_TOGGLE\n");
@@ -94,7 +95,7 @@ int main(void) {
 
                 strcpy(return_msg, "0");
                 MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                break;
+            break;
 
             case BRAKES_TOGGLE:
                 printf("In BRAKES_TOGGLE\n");
@@ -111,7 +112,7 @@ int main(void) {
 
                 strcpy(return_msg, "0");
                 MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                break;
+            break;
 
             case INDICATOR_TOGGLE:
                 printf("In INDICATOR_TOGGLE\n");
@@ -129,24 +130,24 @@ int main(void) {
                 switch (indicator_bit) {
                 case 0: //Both indicators off
                     printf("BOTH INDICATORS OFF\n");
-                    break;
+                break;
                 case 1: //Right indicator on
                     printf("RIGHT INDICATOR ON\n");
-                    break;
+                break;
                 case 2: //Left indicator on
                     printf("LEFT INDICATOR ON\n");
-                    break;
+                break;
                 case 3: //Both indicators on
                     printf("BOTH INDICATORS ON\n");
-                    break;
+                break;
                 default:
                     printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
-                    break;
+                break;
                 }
 
                 strcpy(return_msg, "0");
                 MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                break;
+            break;
 
             case AIRBAG_TOGGLE:
                 printf("In BRAKES_TOGGLE\n");
@@ -157,18 +158,37 @@ int main(void) {
                 //meaning we need to kill and cleanup everything
 
                 goto exit_loop;
-                break;
+            break;
+
+            case STEERING_TOGGLE:
+                printf("In STEERING_TOGGLE\n");
+
+                int degrees = abs(90 - msg.steering_toggle.angle);
+
+                if(msg.steering_toggle.angle < 90){
+                    printf("TURNING LEFT AT AN ANGLE OF %d DEGREES\n", degrees);
+                } 
+                else if (msg.steering_toggle.angle > 90){
+                    printf("TURNING RIGHT AT AN ANGLE OF %d DEGREES\n", degrees);
+                }
+                else{
+                    printf("CONTINUING STRAIGHT AHEAD\n");
+                }
+
+                strcpy(return_msg, "0");
+                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+            break;
 
             default:
                 perror("MsgError\n");
-                break;
+            break;
             }
         }
 
     } //Out of while loop
 
     //remove the name from the namespace and destroy the channel
-    exit_loop: name_detach(attach, 0);
-    printf("Namespace detached and channel destroyed\n");
-    return EXIT_SUCCESS;
+exit_loop: name_detach(attach, 0);
+           printf("Namespace detached and channel destroyed\n");
+           return EXIT_SUCCESS;
 }
