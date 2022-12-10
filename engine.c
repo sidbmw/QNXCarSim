@@ -161,6 +161,8 @@ int main(void) {
                     rpm = 0;
                     indicator_bit = 3;
                     print_details();
+                    strcpy(return_msg, "0");
+					MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                     break;
 
                 default:
