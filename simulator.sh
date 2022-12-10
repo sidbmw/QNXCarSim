@@ -13,6 +13,6 @@ rm -rf local output
 mkqnximage --data-size=500 --type=qemu --arch=x86_64 --toybox='yes' --force --run &
 sleep 30
 ssh-copy-id root@$VM_IP
-scp -r engine airbags throttle indicator brakes demo.sh root@$VM_IP:/tmp
+scp -r engine airbags throttle indicator brakes steering engine_toggle demo.sh root@$VM_IP:/tmp
 ssh root@$VM_IP "cd /tmp/ && chmod +x demo.sh && ./demo.sh"
 
