@@ -81,7 +81,7 @@ int main(void) {
 
                     //This will be used to turn off the engine
                     goto exit_loop;
-                    break;
+                break;
 
                 case THROTTLE_TOGGLE:
                     printf("In THROTTLE_TOGGLE\n");
@@ -99,7 +99,7 @@ int main(void) {
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                    break;
+                break;
 
                 case BRAKES_TOGGLE:
                     printf("In BRAKES_TOGGLE\n");
@@ -116,7 +116,7 @@ int main(void) {
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                    break;
+                break;
 
                 case INDICATOR_TOGGLE:
                     printf("In INDICATOR_TOGGLE\n");
@@ -124,11 +124,11 @@ int main(void) {
                     //Do some work since indicators toggled
                     //Manipulate bits for indicators
                     if(indicator_bit == 0){
-                    	if(msg.indicator_toggle.left_right == 0){
-                    		indicator_bit = 2;
-                    	} else{
-                    		indicator_bit = 1;
-                    	}
+                        if(msg.indicator_toggle.left_right == 0){
+                            indicator_bit = 2;
+                        } else{
+                            indicator_bit = 1;
+                        }
                     } else{
                         if (msg.indicator_toggle.left_right == 0) { //If we want to indicate left..
                             if(indicator_bit == 2){ //..but we already are..
@@ -148,7 +148,7 @@ int main(void) {
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                    break;
+                break;
 
                 case AIRBAG_TOGGLE:
                     printf("In AIRBAG_TOGGLE\n");
@@ -163,25 +163,25 @@ int main(void) {
                     indicator_bit = 3;
                     print_details();
                     strcpy(return_msg, "0");
-					MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                    break;
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                break;
 
                 default:
                     perror("MsgError\n");
-                    break;
+                break;
                 }
             } else { //Airbags were deployed we shouldn't be able to do anything
-            	if(msg.type == ENGINE_TOGGLE){
-            		printf("ENGINE TURNED OFF\n\n");
-            		strcpy(return_msg, "ENGINE SHUT OFF");
-					MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-					goto exit_loop;
-					break;
-            	} else{
-            		printf("\nTHE AIRBAGS ARE DEPLOYED YOU CANNOT PERFORM MORE ACTIONS!\n\n");
-            		strcpy(return_msg, "AIRBAGS ARE DEPLOYED");
-            		MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-            	}
+                if(msg.type == ENGINE_TOGGLE){
+                    printf("ENGINE TURNED OFF\n\n");
+                    strcpy(return_msg, "ENGINE SHUT OFF");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                    goto exit_loop;
+                    break;
+                } else{
+                    printf("\nTHE AIRBAGS ARE DEPLOYED YOU CANNOT PERFORM MORE ACTIONS!\n\n");
+                    strcpy(return_msg, "AIRBAGS ARE DEPLOYED");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                }
 
             case STEERING_TOGGLE:
                 printf("In STEERING_TOGGLE\n");
@@ -212,10 +212,10 @@ int main(void) {
     } //Out of while loop
 
     //remove the name from the namespace and destroy the channel
-    exit_loop:
-		name_detach(attach, 0);
-		printf("Namespace detached and channel destroyed\n");
-		return EXIT_SUCCESS;
+exit_loop:
+    name_detach(attach, 0);
+    printf("Namespace detached and channel destroyed\n");
+    return EXIT_SUCCESS;
 }
 
 int print_details(void) {
@@ -228,19 +228,19 @@ int print_details(void) {
     switch (indicator_bit) {
     case 0: //Both indicators off
         printf("BOTH INDICATORS OFF\n");
-        break;
+    break;
     case 1: //Right indicator on
         printf("RIGHT INDICATOR ON\n");
-        break;
+    break;
     case 2: //Left indicator on
         printf("LEFT INDICATOR ON\n");
-        break;
+    break;
     case 3: //Both indicators on
         printf("BOTH INDICATORS ON\n");
-        break;
+    break;
     default:
         printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
-        break;
+    break;
     }
 
     printf("\n");
