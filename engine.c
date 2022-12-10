@@ -78,8 +78,7 @@ int main(void) {
                 case ENGINE_TOGGLE:
                     printf("In ENGINE_TOGGLE\n");
 
-                    //This will probably be used to turn off the engine
-                    //Do work
+                    //This will be used to turn off the engine
                     goto exit_loop;
                     break;
 
@@ -170,6 +169,13 @@ int main(void) {
                     break;
                 }
             } else { //Airbags were deployed we shouldn't be able to do anything
+            	if(msg.type == ENGINE_TOGGLE){
+            		printf("ENGINE TURNED OFF\n\n");
+            		strcpy(return_msg, "ENGINE SHUT OFF");
+					MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+					goto exit_loop;
+					break;
+            	}
                 strcpy(return_msg, "AIRBAGS ARE DEPLOYED");
                 MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
             }
@@ -179,9 +185,10 @@ int main(void) {
     } //Out of while loop
 
     //remove the name from the namespace and destroy the channel
-    exit_loop: name_detach(attach, 0);
-    printf("Namespace detached and channel destroyed\n");
-    return EXIT_SUCCESS;
+    exit_loop:
+		name_detach(attach, 0);
+		printf("Namespace detached and channel destroyed\n");
+		return EXIT_SUCCESS;
 }
 
 int print_details(void) {
