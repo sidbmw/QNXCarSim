@@ -70,7 +70,7 @@ int main(void) {
                 printf(
                         "The pulse is something else. Code of the pulse: %d. Value of the pulse: %d.\n",
                         msg.pulse.code, msg.pulse.value.sival_int);
-            break;
+                break;
             }
 
         } else { // if it was a message
@@ -81,7 +81,7 @@ int main(void) {
 
                     //This will be used to turn off the engine
                     goto exit_loop;
-                break;
+                    break;
 
                 case THROTTLE_TOGGLE:
                     printf("In THROTTLE_TOGGLE\n");
@@ -99,7 +99,7 @@ int main(void) {
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                break;
+                    break;
 
                 case BRAKES_TOGGLE:
                     printf("In BRAKES_TOGGLE\n");
@@ -116,7 +116,7 @@ int main(void) {
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                break;
+                    break;
 
                 case INDICATOR_TOGGLE:
                     printf("In INDICATOR_TOGGLE\n");
@@ -148,7 +148,7 @@ int main(void) {
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                break;
+                    break;
 
                 case AIRBAG_TOGGLE:
                     printf("In AIRBAG_TOGGLE\n");
@@ -164,11 +164,30 @@ int main(void) {
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-                break;
+                    break;
+
+                case STEERING_TOGGLE:
+                    printf("In STEERING_TOGGLE\n");
+
+                    int degrees = abs(90 - msg.steering_toggle.angle);
+
+                    if(msg.steering_toggle.angle < 90){
+                        printf("TURNING LEFT AT AN ANGLE OF %d DEGREES\n", degrees);
+                    }
+                    else if (msg.steering_toggle.angle > 90){
+                        printf("TURNING RIGHT AT AN ANGLE OF %d DEGREES\n", degrees);
+                    }
+                    else{
+                        printf("CONTINUING STRAIGHT AHEAD\n");
+                    }
+
+                    strcpy(return_msg, "0");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                    break;
 
                 default:
                     perror("MsgError\n");
-                break;
+                    break;
                 }
             } else { //Airbags were deployed we shouldn't be able to do anything
                 if(msg.type == ENGINE_TOGGLE){
@@ -182,33 +201,8 @@ int main(void) {
                     strcpy(return_msg, "AIRBAGS ARE DEPLOYED");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                 }
-
-            case STEERING_TOGGLE:
-                printf("In STEERING_TOGGLE\n");
-
-                int degrees = abs(90 - msg.steering_toggle.angle);
-
-                if(msg.steering_toggle.angle < 90){
-                    printf("TURNING LEFT AT AN ANGLE OF %d DEGREES\n", degrees);
-                } 
-                else if (msg.steering_toggle.angle > 90){
-                    printf("TURNING RIGHT AT AN ANGLE OF %d DEGREES\n", degrees);
-                }
-                else{
-                    printf("CONTINUING STRAIGHT AHEAD\n");
-                }
-
-                strcpy(return_msg, "0");
-                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-            break;
-
-            default:
-                perror("MsgError\n");
-            break;
             }
-
         }
-
     } //Out of while loop
 
     //remove the name from the namespace and destroy the channel
@@ -228,19 +222,19 @@ int print_details(void) {
     switch (indicator_bit) {
     case 0: //Both indicators off
         printf("BOTH INDICATORS OFF\n");
-    break;
+        break;
     case 1: //Right indicator on
         printf("RIGHT INDICATOR ON\n");
-    break;
+        break;
     case 2: //Left indicator on
         printf("LEFT INDICATOR ON\n");
-    break;
+        break;
     case 3: //Both indicators on
         printf("BOTH INDICATORS ON\n");
-    break;
+        break;
     default:
         printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
-    break;
+        break;
     }
 
     printf("\n");
