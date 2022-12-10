@@ -124,7 +124,11 @@ int main(void) {
                     //Do some work since indicators toggled
                     //Manipulate bits for indicators
                     if(indicator_bit == 0){
-                        indicator_bit |= msg.indicator_toggle.left_right;
+                    	if(msg.indicator_toggle.left_right == 0){
+                    		indicator_bit = 2;
+                    	} else{
+                    		indicator_bit = 1;
+                    	}
                     } else{
                         if (msg.indicator_toggle.left_right == 0) { //If we want to indicate left..
                             if(indicator_bit == 2){ //..but we already are..
