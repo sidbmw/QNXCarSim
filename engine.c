@@ -20,6 +20,7 @@ int main(void) {
         brakes_toggle_msg_t brakes_toggle;
         indicator_toggle_msg_t indicator_toggle;
         airbag_toggle_msg_t airbag_toggle;
+        steering_toggle_msg_t steering_toggle;
     } recv_buf_t;
 
     int rcvid;
@@ -58,7 +59,7 @@ int main(void) {
                  */
                 printf("Client is gone\n");
                 ConnectDetach(msg.pulse.scoid);
-                break;
+            break;
 
             default:
                 /*
@@ -69,7 +70,7 @@ int main(void) {
                 printf(
                         "The pulse is something else. Code of the pulse: %d. Value of the pulse: %d.\n",
                         msg.pulse.code, msg.pulse.value.sival_int);
-                break;
+            break;
             }
 
         } else { // if it was a message
@@ -182,6 +183,28 @@ int main(void) {
             		MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
             	}
 
+            case STEERING_TOGGLE:
+                printf("In STEERING_TOGGLE\n");
+
+                int degrees = abs(90 - msg.steering_toggle.angle);
+
+                if(msg.steering_toggle.angle < 90){
+                    printf("TURNING LEFT AT AN ANGLE OF %d DEGREES\n", degrees);
+                } 
+                else if (msg.steering_toggle.angle > 90){
+                    printf("TURNING RIGHT AT AN ANGLE OF %d DEGREES\n", degrees);
+                }
+                else{
+                    printf("CONTINUING STRAIGHT AHEAD\n");
+                }
+
+                strcpy(return_msg, "0");
+                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+            break;
+
+            default:
+                perror("MsgError\n");
+            break;
             }
 
         }
