@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/neutrino.h>
 #include <sys/iofunc.h>
 #include <sys/dispatch.h>
 #include "engine.h"
-
 
 int main(void) {
 
@@ -12,11 +12,17 @@ int main(void) {
         uint16_t type;
         struct _pulse pulse;
         engine_toggle_msg_t engine_toggle;
+        throttle_toggle_msg_t throttle_toggle;
+        brakes_toggle_msg_t brakes_toggle;
+        indicator_toggle_msg_t indicator_toggle;
+        airbag_toggle_msg_t airbag_toggle;
     } recv_buf_t;
 
     int rcvid;
     name_attach_t *attach;
     recv_buf_t msg;
+    char return_msg[256];
+    unsigned char indicator_bit = 0;
 
     //create a channel
     if ((attach = name_attach(NULL, SERVER_NAME, 0)) == NULL) {
@@ -26,8 +32,7 @@ int main(void) {
     printf("Car engine has been turned on and ready...\n");
 
     //the server should keep receiving, processing and replying to messages
-    while(1)
-    {
+    while (1) {
         //code to receive msg or pulse from client
         rcvid = MsgReceive(attach->chid, &msg, sizeof(msg), NULL);
 
@@ -35,7 +40,6 @@ int main(void) {
             break;
         }
         //print the returned value of MsgReceive
-
 
         //check if it was a pulse or a message
         // if it is a pulse -> check the pulse code to see if the client is gone/disconnected and print (client is gone)  else if the pulse is something else print the code and value of the pulse
@@ -49,7 +53,7 @@ int main(void) {
                  */
                 printf("Client is gone\n");
                 ConnectDetach(msg.pulse.scoid);
-            break;
+                break;
 
             default:
                 /*
@@ -57,40 +61,70 @@ int main(void) {
                  * _PULSE_CODE_COIDDEATH or _PULSE_CODE_THREADDEATH
                  * from the kernel?
                  */
-                printf("The pulse is something else. Code of the pulse: %d. Value of the pulse: %d.\n", msg.pulse.code, msg.pulse.value.sival_int);
-            break;
+                printf(
+                        "The pulse is something else. Code of the pulse: %d. Value of the pulse: %d.\n",
+                        msg.pulse.code, msg.pulse.value.sival_int);
+                break;
             }
 
         } else { // if it was a message
-            switch(msg.type) {
+            switch (msg.type) {
             case ENGINE_TOGGLE:
                 printf("In ENGINE_TOGGLE\n");
 
                 //This will probably be used to turn off the engine
                 //Do work
                 goto exit_loop;
-            break;
+                break;
 
             case THROTTLE_TOGGLE:
                 printf("In THROTTLE_TOGGLE\n");
 
                 //Do some work since throttle toggled
 
-            break;
+                break;
 
             case BRAKES_TOGGLE:
                 printf("In BRAKES_TOGGLE\n");
 
                 //Do some work since brakes toggled
 
-            break;
+                break;
 
             case INDICATOR_TOGGLE:
                 printf("In INDICATOR_TOGGLE\n");
 
                 //Do some work since indicators toggled
+                //Manipulate bits for indicators
+                //2 to manipulate left indicator | 1 to manipulate right indicator
 
-            break;
+                if (msg.indicator_toggle.left_right == 0) {
+                    indicator_bit ^= 2;
+                } else {
+                    indicator_bit ^= 1;
+                }
+
+                switch (indicator_bit) {
+                case 0: //Both indicators off
+                    printf("BOTH INDICATORS OFF\n");
+                    break;
+                case 1: //Right indicator on
+                    printf("RIGHT INDICATOR ON\n");
+                    break;
+                case 2: //Left indicator on
+                    printf("LEFT INDICATOR ON\n");
+                    break;
+                case 3: //Both indicators on
+                    printf("BOTH INDICATORS ON\n");
+                    break;
+                default:
+                    printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
+                    break;
+                }
+
+                strcpy(return_msg, "0");
+                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                break;
 
             case AIRBAG_TOGGLE:
                 printf("In BRAKES_TOGGLE\n");
@@ -101,19 +135,18 @@ int main(void) {
                 //meaning we need to kill and cleanup everything
 
                 goto exit_loop;
-            break;
+                break;
 
             default:
                 perror("MsgError\n");
-            break;
+                break;
             }
         }
 
     } //Out of while loop
 
     //remove the name from the namespace and destroy the channel
-exit_loop:
-    name_detach(attach, 0);
+    exit_loop: name_detach(attach, 0);
     printf("Namespace detached and channel destroyed\n");
     return EXIT_SUCCESS;
 }

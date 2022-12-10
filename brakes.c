@@ -17,14 +17,12 @@ int main(int argc, char **argv) {
     throttle_toggle_msg_t msg;
     int server_coid, status;
     char return_status[256];
-    int pressure;
+    int pressure = atoi(argv[1]);
 
     if (argc != 2){
         printf("Error: Must have two arguments\n");
         exit(EXIT_FAILURE);
     }
-
-    pressure = argv[1];
 
     printf("brakes.c now attempting to connect to engine.c\n");
 
