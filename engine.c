@@ -73,7 +73,7 @@ int main(void) {
             }
 
         } else { // if it was a message
-            if(airbags_deployed != 1){ //Do work if
+            if(airbags_deployed != 1){ //Do work if airbags aren't deployed
                 switch (msg.type) {
                 case ENGINE_TOGGLE:
                     printf("In ENGINE_TOGGLE\n");
@@ -176,9 +176,12 @@ int main(void) {
 					MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
 					goto exit_loop;
 					break;
+            	} else{
+            		printf("\nTHE AIRBAGS ARE DEPLOYED YOU CANNOT PERFORM MORE ACTIONS!\n\n");
+            		strcpy(return_msg, "AIRBAGS ARE DEPLOYED");
+            		MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
             	}
-                strcpy(return_msg, "AIRBAGS ARE DEPLOYED");
-                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+
             }
 
         }
