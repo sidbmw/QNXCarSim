@@ -140,11 +140,7 @@ int main(void) {
                             if(indicator_bit == 1){ //..but we already are..
                                 indicator_bit ^= 1; //..XOR with 0b01 to turn it off
                             } else{ //..but we are currently indicating left..
-<<<<<<< HEAD
-                                indicator_bit ^= 3; //..XOR with 0b11 to flip to indicate right
-=======
                                 indicator_bit ^= 3; //..AND with 0b00 to flip to indicate right
->>>>>>> 386c7dc (fixed fr this time)
                             }
                         }
                     }
