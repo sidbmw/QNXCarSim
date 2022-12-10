@@ -14,7 +14,7 @@
 
 int main(void) {
 
-	engine_toggle_msg_t msg;
+    engine_toggle_msg_t msg;
     int server_coid;
     char return_status[256];
 
