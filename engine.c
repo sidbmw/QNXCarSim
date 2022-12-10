@@ -8,7 +8,7 @@
 
 unsigned short int rpm = 1500;
 unsigned char indicator_bit = 0;
-int degrees = 90, user_angle;
+int degrees = 90, user_angle = 90;
 int print_details(void);
 
 int main(void) {
