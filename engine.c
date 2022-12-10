@@ -172,6 +172,7 @@ int main(void) {
 
                     degrees = abs(90 - msg.steering_toggle.angle);
                     user_angle = msg.steering_toggle.angle;
+                    print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                     break;
