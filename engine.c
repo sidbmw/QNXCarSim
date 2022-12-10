@@ -130,12 +130,14 @@ int main(void) {
 							indicator_bit |= 0; //..OR with 0b00 to flip to indicate left
 						}
 
-					} else { //If we want to indicate right..
+					} else if (msg.indicator_toggle.left_right == 1) { //If we want to indicate right..
 						if(indicator_bit == 1){ //..but we already are..
 							indicator_bit ^= 1; //..XOR with 0b01 to turn it off
 						} else{ //..but we are currently indicating left..
 							indicator_bit &= 0; //..AND with 0b00 to flip to indicate right
 						}
+					} else{
+						indicator_bit |= msg.indicator_toggle.left_right;
 					}
 					print_details();
 					strcpy(return_msg, "0");
