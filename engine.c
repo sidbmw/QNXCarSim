@@ -161,7 +161,6 @@ int main(void) {
                     rpm = 0;
                     indicator_bit = 3;
                     print_details();
-                    goto exit_loop;
                     break;
 
                 default:
