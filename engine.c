@@ -144,7 +144,7 @@ int main(void) {
                             }
                         }
                     }
-
+                    airbags_deployed = 1;
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
