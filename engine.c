@@ -144,7 +144,6 @@ int main(void) {
                             }
                         }
                     }
-                    airbags_deployed = 1;
                     print_details();
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
@@ -158,6 +157,7 @@ int main(void) {
                     //If we are here it means airbags were deployed and the car should be shut off
                     //meaning we need to kill and cleanup everything
                     printf("AIRBAGS DEPLOYED! AIRBAGS DEPLOYED! \n\n");
+                    airbags_deployed = 1;
                     rpm = 0;
                     indicator_bit = 3;
                     print_details();
