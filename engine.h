@@ -1,5 +1,6 @@
 
 #include <stdint.h>
+#include <errno.h>
 #include <sys/iomsg.h>
 
 #define ENGINE_TOGGLE (_IO_MAX+200)

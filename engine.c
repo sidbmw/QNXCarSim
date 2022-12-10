@@ -23,6 +23,7 @@ int main(void) {
     recv_buf_t msg;
     char return_msg[256];
     unsigned char indicator_bit = 0;
+    unsigned short int rpm = 1500, throttle_brake_multiplier = 20;
 
     //create a channel
     if ((attach = name_attach(NULL, SERVER_NAME, 0)) == NULL) {
@@ -81,14 +82,35 @@ int main(void) {
                 printf("In THROTTLE_TOGGLE\n");
 
                 //Do some work since throttle toggled
+                //Calculate RPM to be added to current RPM
+                //If we would exceed the redline with rpm + throttle pressure * multiplier then set to 8000 (redline)
+                if(rpm + throttle_brake_multiplier * msg.throttle_toggle.pressure <= 8000){
+                    rpm += throttle_brake_multiplier * msg.throttle_toggle.pressure;
+                    printf("ACCELERATING! CURRENT RPM: %d\n", rpm);
+                } else{
+                    rpm = 8000;
+                    printf("YOU'RE NOW AT REDLINE! CURRENT RPM: %d\n", rpm);
+                }
 
+                strcpy(return_msg, "0");
+                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                 break;
 
             case BRAKES_TOGGLE:
                 printf("In BRAKES_TOGGLE\n");
 
                 //Do some work since brakes toggled
+                //If rpm - brake pressure * multiplier less than 1500, just set to 1500 (standstill)
+                if(rpm - throttle_brake_multiplier * msg.brakes_toggle.pressure <= 1500){
+                    rpm = 1500;
+                    printf("YOU ARE NOW AT A STANDSTILL! CURRENT RPM: %d\n", rpm);
+                } else{
+                    rpm -= throttle_brake_multiplier * msg.brakes_toggle.pressure;
+                    printf("BRAKING! CURRENT RPM: %d\n", rpm);
+                }
 
+                strcpy(return_msg, "0");
+                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                 break;
 
             case INDICATOR_TOGGLE:
