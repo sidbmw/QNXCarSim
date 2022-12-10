@@ -6,6 +6,10 @@
 #include <sys/dispatch.h>
 #include "engine.h"
 
+unsigned short int rpm = 1500;
+unsigned char indicator_bit = 0;
+int print_details(void);
+
 int main(void) {
 
     typedef union {
@@ -23,8 +27,8 @@ int main(void) {
     name_attach_t *attach;
     recv_buf_t msg;
     char return_msg[256];
-    unsigned char indicator_bit = 0;
-    unsigned short int rpm = 1500, throttle_brake_multiplier = 20;
+    unsigned char airbags_deployed = 0;
+    unsigned short int throttle_brake_multiplier = 20;
 
     //create a channel
     if ((attach = name_attach(NULL, SERVER_NAME, 0)) == NULL) {
@@ -70,95 +74,114 @@ int main(void) {
             }
 
         } else { // if it was a message
-            switch (msg.type) {
-            case ENGINE_TOGGLE:
-                printf("In ENGINE_TOGGLE\n");
+            if(airbags_deployed != 1){ //Do work if airbags aren't deployed
+                switch (msg.type) {
+                case ENGINE_TOGGLE:
+                    printf("In ENGINE_TOGGLE\n");
 
-                //This will probably be used to turn off the engine
-                //Do work
-                goto exit_loop;
-            break;
-
-            case THROTTLE_TOGGLE:
-                printf("In THROTTLE_TOGGLE\n");
-
-                //Do some work since throttle toggled
-                //Calculate RPM to be added to current RPM
-                //If we would exceed the redline with rpm + throttle pressure * multiplier then set to 8000 (redline)
-                if(rpm + throttle_brake_multiplier * msg.throttle_toggle.pressure <= 8000){
-                    rpm += throttle_brake_multiplier * msg.throttle_toggle.pressure;
-                    printf("ACCELERATING! CURRENT RPM: %d\n", rpm);
-                } else{
-                    rpm = 8000;
-                    printf("YOU'RE NOW AT REDLINE! CURRENT RPM: %d\n", rpm);
-                }
-
-                strcpy(return_msg, "0");
-                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-            break;
-
-            case BRAKES_TOGGLE:
-                printf("In BRAKES_TOGGLE\n");
-
-                //Do some work since brakes toggled
-                //If rpm - brake pressure * multiplier less than 1500, just set to 1500 (standstill)
-                if(rpm - throttle_brake_multiplier * msg.brakes_toggle.pressure <= 1500){
-                    rpm = 1500;
-                    printf("YOU ARE NOW AT A STANDSTILL! CURRENT RPM: %d\n", rpm);
-                } else{
-                    rpm -= throttle_brake_multiplier * msg.brakes_toggle.pressure;
-                    printf("BRAKING! CURRENT RPM: %d\n", rpm);
-                }
-
-                strcpy(return_msg, "0");
-                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-            break;
-
-            case INDICATOR_TOGGLE:
-                printf("In INDICATOR_TOGGLE\n");
-
-                //Do some work since indicators toggled
-                //Manipulate bits for indicators
-                //2 to manipulate left indicator | 1 to manipulate right indicator
-
-                if (msg.indicator_toggle.left_right == 0) {
-                    indicator_bit ^= 2;
-                } else {
-                    indicator_bit ^= 1;
-                }
-
-                switch (indicator_bit) {
-                case 0: //Both indicators off
-                    printf("BOTH INDICATORS OFF\n");
+                    //This will be used to turn off the engine
+                    goto exit_loop;
                 break;
-                case 1: //Right indicator on
-                    printf("RIGHT INDICATOR ON\n");
+
+                case THROTTLE_TOGGLE:
+                    printf("In THROTTLE_TOGGLE\n");
+
+                    //Do some work since throttle toggled
+                    //Calculate RPM to be added to current RPM
+                    //If we would exceed the redline with rpm + throttle pressure * multiplier then set to 8000 (redline)
+                    if(rpm + throttle_brake_multiplier * msg.throttle_toggle.pressure <= 8000){
+                        rpm += throttle_brake_multiplier * msg.throttle_toggle.pressure;
+                        printf("ACCELERATING!\n\n");
+                    } else{
+                        rpm = 8000;
+                        printf("YOU'RE NOW AT REDLINE!\n\n");
+                    }
+                    print_details();
+                    strcpy(return_msg, "0");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                 break;
-                case 2: //Left indicator on
-                    printf("LEFT INDICATOR ON\n");
+
+                case BRAKES_TOGGLE:
+                    printf("In BRAKES_TOGGLE\n");
+
+                    //Do some work since brakes toggled
+                    //If rpm - brake pressure * multiplier less than 1500, just set to 1500 (standstill)
+                    if(rpm - throttle_brake_multiplier * msg.brakes_toggle.pressure <= 1500){
+                        rpm = 1500;
+                        printf("YOU ARE NOW AT A STANDSTILL!\n\n");
+                    } else{
+                        rpm -= throttle_brake_multiplier * msg.brakes_toggle.pressure;
+                        printf("BRAKING!\n\n");
+                    }
+                    print_details();
+                    strcpy(return_msg, "0");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                 break;
-                case 3: //Both indicators on
-                    printf("BOTH INDICATORS ON\n");
+
+                case INDICATOR_TOGGLE:
+                    printf("In INDICATOR_TOGGLE\n");
+
+                    //Do some work since indicators toggled
+                    //Manipulate bits for indicators
+                    if(indicator_bit == 0){
+                        if(msg.indicator_toggle.left_right == 0){
+                            indicator_bit = 2;
+                        } else{
+                            indicator_bit = 1;
+                        }
+                    } else{
+                        if (msg.indicator_toggle.left_right == 0) { //If we want to indicate left..
+                            if(indicator_bit == 2){ //..but we already are..
+                                indicator_bit &= 0; //..AND with 0b00 to turn it off
+                            } else{ //..but we are currently indicating right..
+                                indicator_bit ^= 3; //..XOR with 0b11 to flip to indicate left
+                            }
+
+                        } else { //If we want to indicate right..
+                            if(indicator_bit == 1){ //..but we already are..
+                                indicator_bit ^= 1; //..XOR with 0b01 to turn it off
+                            } else{ //..but we are currently indicating left..
+                                indicator_bit ^= 3; //..AND with 0b00 to flip to indicate right
+                            }
+                        }
+                    }
+                    print_details();
+                    strcpy(return_msg, "0");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                 break;
+
+                case AIRBAG_TOGGLE:
+                    printf("In AIRBAG_TOGGLE\n");
+
+                    //Do some work since airbags deployed
+                    //This case and ENGINE_TOGGLE are very similar might remove one of them
+                    //If we are here it means airbags were deployed and the car should be shut off
+                    //meaning we need to kill and cleanup everything
+                    printf("AIRBAGS DEPLOYED! AIRBAGS DEPLOYED! \n\n");
+                    airbags_deployed = 1;
+                    rpm = 0;
+                    indicator_bit = 3;
+                    print_details();
+                    strcpy(return_msg, "0");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                break;
+
                 default:
-                    printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
+                    perror("MsgError\n");
                 break;
                 }
-
-                strcpy(return_msg, "0");
-                MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
-            break;
-
-            case AIRBAG_TOGGLE:
-                printf("In BRAKES_TOGGLE\n");
-
-                //Do some work since airbags deployed
-                //This case and ENGINE_TOGGLE are very similar might remove one of them
-                //If we are here it means airbags were deployed and the car should be shut off
-                //meaning we need to kill and cleanup everything
-
-                goto exit_loop;
-            break;
+            } else { //Airbags were deployed we shouldn't be able to do anything
+                if(msg.type == ENGINE_TOGGLE){
+                    printf("ENGINE TURNED OFF\n\n");
+                    strcpy(return_msg, "ENGINE SHUT OFF");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                    goto exit_loop;
+                    break;
+                } else{
+                    printf("\nTHE AIRBAGS ARE DEPLOYED YOU CANNOT PERFORM MORE ACTIONS!\n\n");
+                    strcpy(return_msg, "AIRBAGS ARE DEPLOYED");
+                    MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
+                }
 
             case STEERING_TOGGLE:
                 printf("In STEERING_TOGGLE\n");
@@ -183,12 +206,43 @@ int main(void) {
                 perror("MsgError\n");
             break;
             }
+
         }
 
     } //Out of while loop
 
     //remove the name from the namespace and destroy the channel
-exit_loop: name_detach(attach, 0);
-           printf("Namespace detached and channel destroyed\n");
-           return EXIT_SUCCESS;
+exit_loop:
+    name_detach(attach, 0);
+    printf("Namespace detached and channel destroyed\n");
+    return EXIT_SUCCESS;
+}
+
+int print_details(void) {
+    printf("\n");
+
+    //Print current RPM
+    printf("CURRENT RPM: %d\n", rpm);
+
+    //Print indicator status
+    switch (indicator_bit) {
+    case 0: //Both indicators off
+        printf("BOTH INDICATORS OFF\n");
+    break;
+    case 1: //Right indicator on
+        printf("RIGHT INDICATOR ON\n");
+    break;
+    case 2: //Left indicator on
+        printf("LEFT INDICATOR ON\n");
+    break;
+    case 3: //Both indicators on
+        printf("BOTH INDICATORS ON\n");
+    break;
+    default:
+        printf("INDICATORS DEFAULTED. PLEASE CHECK\n");
+    break;
+    }
+
+    printf("\n");
+    return EXIT_SUCCESS;
 }

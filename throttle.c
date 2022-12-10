@@ -17,13 +17,13 @@ int main(int argc, char **argv) {
     throttle_toggle_msg_t msg;
     int server_coid, status;
     char return_status[256];
-    int pressure = atoi(argv[1]);
+    int pressure;
 
     if (argc != 2){
         printf("Error: Must have two arguments\n");
         exit(EXIT_FAILURE);
     }
-
+    pressure = atoi(argv[1]);
     printf("throttle.c now attempting to connect to engine.c\n");
 
     /* find our server to get a coid*/
