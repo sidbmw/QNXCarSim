@@ -98,7 +98,7 @@ int main(void) {
                 //Manipulate bits for indicators
                 //2 to manipulate left indicator | 1 to manipulate right indicator
 
-                if (strcmp(msg.indicator_toggle.left_right, '0') == 0) {
+                if (msg.indicator_toggle.left_right == 0) {
                     indicator_bit ^= 2;
                 } else {
                     indicator_bit ^= 1;
