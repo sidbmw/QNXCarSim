@@ -8,7 +8,7 @@
 
 unsigned short int rpm = 1500;
 unsigned char indicator_bit = 0;
-int degrees = 90;
+int degrees = 90, user_angle;
 int print_details(void);
 
 int main(void) {
@@ -171,7 +171,7 @@ int main(void) {
                     printf("In STEERING_TOGGLE\n");
 
                     degrees = abs(90 - msg.steering_toggle.angle);
-
+                    user_angle = msg.steering_toggle.angle;
                     strcpy(return_msg, "0");
                     MsgReply(rcvid, EOK, &return_msg, sizeof(return_msg));
                     break;
@@ -209,10 +209,10 @@ int print_details(void) {
     //Print current RPM
     printf("CURRENT RPM: %d\n", rpm);
 
-    if(msg.steering_toggle.angle < 90){
+    if(user_angle < 90){
         printf("TURNING LEFT AT AN ANGLE OF %d DEGREES\n", degrees);
     }
-    else if (msg.steering_toggle.angle > 90){
+    else if (user_angle > 90){
         printf("TURNING RIGHT AT AN ANGLE OF %d DEGREES\n", degrees);
     }
     else{
